@@ -1,33 +1,34 @@
-var fs = require('fs');
-var path = require('path');
-var URL = require('url');
-var platform = require('platform');
+'use strict'
 
-var dir = path.resolve(__dirname, '..').replace(/\\/g, '/');
+const fs = require('fs')
+const path = require('path')
+const URL = require('url')
+const platform = require('platform')
 
-module.exports = function(win) {
-  var wc = win.webContents;
-  wc.on('did-navigate', function(ev, url) {
-    var host = URL.parse(url).host;
-    if (host == 'inbox.google.com') {
-      insertCss(wc);
-      this.once('did-finish-load', function() {
-        wc.executeJavaScript('module.paths.push("' + dir + '/node_modules");');
-        wc.executeJavaScript('module.paths.push("' + dir + '/web");');
-        wc.executeJavaScript('require("inject");');
-      });
+const dir = path.resolve(__dirname, '..').replace(/\\/g, '/')
+
+module.exports = function (win) {
+  const wc = win.webContents
+  wc.on('did-navigate', function (ev, url) {
+    const host = URL.parse(url).host
+    if (host === 'inbox.google.com') {
+      insertCss(wc)
+      this.once('did-finish-load', function () {
+        wc.executeJavaScript('module.paths.push("' + dir + '/node_modules");')
+        wc.executeJavaScript('module.paths.push("' + dir + '/web");')
+        wc.executeJavaScript('require("inject");')
+      })
     }
-  });
+  })
 
-  function insertCss(wc) {
-    wc.insertCSS(fs.readFileSync(dir + '/web/css/custom.css', 'utf8'));
+  function insertCss (wc) {
+    wc.insertCSS(fs.readFileSync(dir + '/web/css/custom.css', 'utf8'))
     try {
-      var customCss = 'custom-' + platform.os.family.replace(/\s/, '').toLowerCase() + '.css';
-      console.log(customCss);
-      wc.insertCSS(fs.readFileSync(dir + '/web/css/' + customCss, 'utf8'));
-      console.log('Using specific styles: ' + customCss);
-    }
-    catch (e) {
+      const customCss = 'custom-' + platform.os.family.replace(/\s/, '').toLowerCase() + '.css'
+      console.log(customCss)
+      wc.insertCSS(fs.readFileSync(dir + '/web/css/' + customCss, 'utf8'))
+      console.log('Using specific styles: ' + customCss)
+    } catch (e) {
     }
   }
-};
+}

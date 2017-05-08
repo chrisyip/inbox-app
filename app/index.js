@@ -1,25 +1,26 @@
-var fs = require('fs');
-var electron = require('electron');
-var app = electron.app;
+'use strict'
 
-var badge = require('./badge');
-var inbox = require('./inbox');
-var menu = require('./menu');
+const fs = require('fs')
+const electron = require('electron')
+const app = electron.app
 
-app.on('window-all-closed', function() {
-  app.quit();
-});
+const badge = require('./badge')
+const inbox = require('./inbox')
+const menu = require('./menu')
 
+app.on('window-all-closed', function () {
+  app.quit()
+})
 
-app.on('ready', function() {
-  var win = inbox.open('https://inbox.google.com');
+app.on('ready', function () {
+  const win = inbox.open('https://inbox.google.com')
 
-  win.on('close', function() {
+  win.on('close', function () {
     fs.writeFileSync(inbox.getBoundsFile(), JSON.stringify({
       bounds: win.getBounds()
-    }));
-  });
+    }))
+  })
 
-  menu();
-  badge();
-});
+  menu()
+  badge()
+})

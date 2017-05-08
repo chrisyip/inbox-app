@@ -1,9 +1,11 @@
-var electron = require('electron');
-var Menu = electron.Menu;
-var shell = electron.shell;
+'use strict'
 
-module.exports = function() {
-  var template = [
+const electron = require('electron')
+const Menu = electron.Menu
+const shell = electron.shell
+
+module.exports = function () {
+  const template = [
     {
       label: 'Inbox',
       submenu: [
@@ -17,8 +19,8 @@ module.exports = function() {
         { type: 'separator' },
         { label: 'Quit',
           accelerator: 'Command+Q',
-          click: function() {
-            electron.app.quit();
+          click: function () {
+            electron.app.quit()
           }
         }
       ]
@@ -33,7 +35,7 @@ module.exports = function() {
         { label: 'Copy', accelerator: 'CmdOrCtrl+C', role: 'copy' },
         { label: 'Paste', accelerator: 'CmdOrCtrl+V', role: 'paste' },
         { label: 'Paste and match style', accelerator: 'Shift+CmdOrCtrl+V', selector: 'pasteAndMatchStyle:' },
-        { label: 'Select All', accelerator: 'CmdOrCtrl+A', role: 'selectall' },
+        { label: 'Select All', accelerator: 'CmdOrCtrl+A', role: 'selectall' }
       ]
     },
     {
@@ -42,24 +44,24 @@ module.exports = function() {
         {
           label: 'Reload',
           accelerator: 'CmdOrCtrl+R',
-          click: function(item, win) {
-            if (win) win.reload();
+          click: function (item, win) {
+            if (win) win.reload()
           }
         },
         {
           label: 'Toggle Full Screen',
           accelerator: 'Ctrl+Command+F',
-          click: function(item, win) {
-            if (win) win.setFullScreen(!win.isFullScreen());
+          click: function (item, win) {
+            if (win) win.setFullScreen(!win.isFullScreen())
           }
         },
         {
           label: 'Toggle Developer Tools',
           accelerator: 'Alt+Command+I',
-          click: function(item, win) {
-            if (win) win.toggleDevTools();
+          click: function (item, win) {
+            if (win) win.toggleDevTools()
           }
-        },
+        }
       ]
     },
     {
@@ -67,7 +69,7 @@ module.exports = function() {
       role: 'window',
       submenu: [
         { label: 'Minimize', accelerator: 'CmdOrCtrl+M', role: 'minimize' },
-        { label: 'Close', accelerator: 'CmdOrCtrl+W', role: 'close' },
+        { label: 'Close', accelerator: 'CmdOrCtrl+W', role: 'close' }
       ]
     },
     {
@@ -76,13 +78,13 @@ module.exports = function() {
       submenu: [
         {
           label: 'View on GitHub',
-          click: function() {
-            shell.openExternal('http://github.com/fgnass/inbox-app');
+          click: function () {
+            shell.openExternal('http://github.com/fgnass/inbox-app')
           }
-        },
+        }
       ]
     }
-  ];
+  ]
 
-  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
-};
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+}

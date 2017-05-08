@@ -1,10 +1,11 @@
-var path = require('path');
+'use strict'
 
-['inspect', 'spellcheck', 'unread', 'accounts'].forEach(function(mod) {
+const path = require('path');
+
+['inspect', 'spellcheck', 'unread', 'accounts'].forEach(function (mod) {
   try {
-    require(path.join(__dirname, mod));
+    require(path.join(__dirname, mod))
+  } catch (err) {
+    console.log(err)
   }
-  catch (err) {
-    console.log(err);
-  }
-});
+})
