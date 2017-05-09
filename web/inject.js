@@ -1,8 +1,9 @@
 'use strict'
 
-const path = require('path');
+const path = require('path')
+const modules = ['spellcheck', 'unread', 'accounts']
 
-['inspect', 'spellcheck', 'unread', 'accounts'].forEach(function (mod) {
+modules.forEach(function (mod) {
   try {
     require(path.join(__dirname, mod))
   } catch (err) {

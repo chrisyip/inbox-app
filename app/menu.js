@@ -79,7 +79,7 @@ module.exports = function () {
         {
           label: 'View on GitHub',
           click: function () {
-            shell.openExternal('http://github.com/fgnass/inbox-app')
+            shell.openExternal('http://github.com/chrisyip/inbox-app')
           }
         }
       ]
