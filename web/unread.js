@@ -10,27 +10,24 @@ const click = require('./click')
 let seen
 
 function extractData (ss) {
-  let id, avatar, subject
+  const p = ss.closest('[data-item-id][role="listitem"]')
 
-  const p = ss.parentNode.parentNode.parentNode.parentNode.parentNode
-  const a = p.querySelector('[data-action-data]')
-  const action = a.dataset.actionData
-  id = /#.+?:([^"]+)/.exec(action)
-
-  if (id == null) {
+  if (p == null) {
     return
   }
 
-  id = id[1]
+  let avatar, subject
 
-  if (id.indexOf('^' === 0)) {
-    // Use textContent for clusters
-    id = p.textContent.replace(/\W/g, '')
+  const id = p.dataset.itemId
+
+  // Skip clusters
+  if (id == null || id.startsWith('#^')) {
+    return
   }
 
-  if (p.classList.contains('full-cluster-item') ||
-    p.querySelector('.itemIconMarkedDone')
-  ) return
+  if (p.querySelector('.itemIconMarkedDone')) {
+    return
+  }
 
   subject = (p.querySelector('.lt') || p.querySelector('.qG span')).textContent
 
@@ -49,10 +46,10 @@ function extractData (ss) {
   }
 
   return {
-    id: id,
-    subject: subject,
+    id,
+    subject,
     sender: ss.textContent,
-    avatar: avatar,
+    avatar,
     element: ss
   }
 }
@@ -124,8 +121,35 @@ function checkState () {
     }
     seen[msg.id] = true
   })
+}
 
-  setTimeout(checkState, 1000)
+function observeNewMessages () {
+  if (window._newMessageObserver instanceof MutationObserver) {
+    window._newMessageObserver.disconnect()
+  }
+
+  const list = document.querySelector('[role="application"] > [role="list"]')
+
+  if (list) {
+    let timer
+
+    const observer = new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList') {
+          const node = mutation.addedNodes[0] || mutation.removedNodes[0]
+
+          if (node && node.classList.contains('scroll-list-item')) {
+            clearTimeout(timer)
+            timer = setTimeout(checkState, 50)
+          }
+        }
+      }
+    })
+
+    observer.observe(list, { subtree: true, childList: true })
+    window._newMessageObserver = observer
+  }
 }
 
 checkState()
+observeNewMessages()
