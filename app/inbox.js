@@ -60,7 +60,7 @@ exports.open = function (url, name) {
     width: windowBounds.width,
     height: windowBounds.height,
     show: name !== '_minimized',
-    titleBarStyle: 'hidden-inset',
+    titleBarStyle: 'hidden',
     icon: __dirname.split('/').slice(0, -1).join('/') + '/icon.iconset/icon_256x256.png'
   })
 
