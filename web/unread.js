@@ -6,7 +6,6 @@ const electron = require('electron')
 const ipc = electron.ipcRenderer
 const remote = electron.remote
 const click = require('./click')
-const qsa = require('./qsa')
 
 let seen
 
@@ -16,7 +15,13 @@ function extractData (ss) {
   const p = ss.parentNode.parentNode.parentNode.parentNode.parentNode
   const a = p.querySelector('[data-action-data]')
   const action = a.dataset.actionData
-  id = /#.+?:([^"]+)/.exec(action)[1]
+  id = /#.+?:([^"]+)/.exec(action)
+
+  if (id == null) {
+    return
+  }
+
+  id = id[1]
 
   if (id.indexOf('^' === 0)) {
     // Use textContent for clusters
@@ -59,8 +64,14 @@ function getNew (messages) {
 }
 
 function getUnreadMessages () {
-  if (!document.querySelector('.hn.b4')) return [] // not inside the inbox
-  return qsa('.ss').map(extractData).filter(Boolean)
+  const list = document.querySelector('[role="application"] > [role="list"]')
+
+  if (list == null) {
+    return []
+  }
+
+  return Array.prototype.map.call(list.querySelectorAll('.ss'), extractData)
+          .filter(item => item != null)
 }
 
 window.createBadge = function (text) {
