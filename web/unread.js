@@ -72,7 +72,7 @@ function getUnreadMessages () {
 }
 
 window.createBadge = function (text) {
-      // Create badge
+  // Create badge
   const canvas = document.createElement('canvas')
   canvas.height = 140
   canvas.width = 140
@@ -131,22 +131,49 @@ function observeNewMessages () {
   const list = document.querySelector('[role="application"] > [role="list"]')
 
   if (list) {
-    let timer
-
     const observer = new MutationObserver(mutations => {
+      let needsCheckState = false
       for (const mutation of mutations) {
-        if (mutation.type === 'childList') {
-          const node = mutation.addedNodes[0] || mutation.removedNodes[0]
+        if (mutation.type === 'attributes') {
+          if (mutation.oldValue === 'ss' || mutation.target.classList.contains('ss')) {
+            needsCheckState = true
+            break
+          }
 
-          if (node && node.classList.contains('scroll-list-item')) {
-            clearTimeout(timer)
-            timer = setTimeout(checkState, 50)
+          continue
+        }
+
+        const node = mutation.addedNodes[0] || mutation.removedNodes[0]
+
+        if (mutation.type === 'childList') {
+          if (
+            node &&
+            (
+              node.classList.contains('scroll-list-item') ||
+              node.closest('.scroll-list-item.scroll-list-item-open')
+            )
+          ) {
+            needsCheckState = true
+            break
           }
         }
       }
+
+      if (needsCheckState) {
+        checkState()
+      }
     })
 
-    observer.observe(list, { subtree: true, childList: true })
+    observer.observe(
+      list,
+      {
+        subtree: true,
+        childList: true,
+        attributes: true,
+        attributeFilter: ['class'],
+        attributeOldValue: true
+      }
+    )
     window._newMessageObserver = observer
   }
 }
