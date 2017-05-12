@@ -135,7 +135,10 @@ function observeNewMessages () {
       let needsCheckState = false
       for (const mutation of mutations) {
         if (mutation.type === 'attributes') {
-          if (mutation.oldValue === 'ss' || mutation.target.classList.contains('ss')) {
+          if (
+            !mutation.target.closest('.scroll-list-item-cluster') &&
+            (mutation.oldValue === 'ss' || mutation.target.classList.contains('ss'))
+          ) {
             needsCheckState = true
             break
           }
@@ -148,6 +151,7 @@ function observeNewMessages () {
         if (mutation.type === 'childList') {
           if (
             node &&
+            !node.closest('.scroll-list-item-cluster') &&
             (
               node.classList.contains('scroll-list-item') ||
               node.closest('.scroll-list-item.scroll-list-item-open')
